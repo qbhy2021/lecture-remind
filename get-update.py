@@ -17,7 +17,8 @@ class Lecture:
         self.Lecture_list = []
 
     def get_html(self, url, headers):
-        rep = requests.get(url=url, headers=headers)
+        s = requests.Session()
+        rep = s.get(url=url, headers=headers)
         rep.encoding = 'gbk'
         return rep.text
 
