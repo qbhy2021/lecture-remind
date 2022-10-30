@@ -4,7 +4,7 @@ import time
 import sqlite3
 import os
 
-from email01 import EMAIL
+from email_text import Email
 
 
 class Lecture:
@@ -51,19 +51,24 @@ class Lecture:
             cursor.execute("create table if not exists lecture1 (time varchar(20),place varchar(20),theme varchar(20),"
                            "department varchar(20),url varchar(20))")  # ,speaker varchar(20)
             select = cursor.execute("select * from lecture1")
+
             for row in select:
                 if row:
                     data.append([i for i in row])
+            # print(data)
             cursor.execute('delete from lecture1')  # 清除上次数据
 
             for i in range(0, len(info)):
+                print(i)
                 # '{info[i][0]}', '{info[i][1]}', '{info[i][2]}', '{info[i][3]}', '{info[i][4]}'
                 cursor.execute(f"insert into lecture1 (time,place,theme,department,url) values "
                                f"('{info[i][0]}', '{info[i][1]}', '{info[i][2]}', '{info[i][3]}', '{info[i][4]}')")
+
                 if info[i][3] == '电子与信息工程学院' and info[i] not in data:
-                    news = EMAIL(info[i])
+                # if True:
+                    news = Email(info[i])
                     news.send()
-                    time.sleep(10)
+                    time.sleep(5)
         except:
             print('error!')
         finally:
@@ -74,4 +79,6 @@ class Lecture:
 
 if __name__ == '__main__':
     lect = Lecture()
-    lect.judge_new(lect.get_info())
+    while True:
+        lect.judge_new(lect.get_info())
+        time.sleep(60 * 60 * 2)

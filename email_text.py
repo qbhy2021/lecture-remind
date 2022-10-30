@@ -4,9 +4,10 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
+from account import password
 
 
-class EMAIL:
+class Email:
     def __init__(self, info_list):
         self.time = info_list[0]
         self.place = info_list[1]
@@ -14,13 +15,13 @@ class EMAIL:
         self.department = info_list[3]
         self.url = info_list[4]
         self.e_host = 'smtp.163.com'
-        self.e_sender = 'qbhy_2021@163.com'
-        self.e_license = 'DKWVJTNLTLPPANAX'
+        self.e_sender = 'yangbo_0111@163.com'
+        self.e_license = password
         self.e_receivers = ['3100954150@qq.com']
 
     def email(self):
         mm = MIMEMultipart()
-        mm['From'] = self.e_sender      # 'qbhy_2021<qbhy_2021@163.com>'
+        mm['From'] = self.e_sender
         mm['To'] = self.e_receivers[0]  # '此去经年<3100954150@qq.com>,receiver_2_name<**@qq.com>'
         subject_content = '讲座邀请函'
         content = '讲座邀请函\n\n'+f'讲座主题：{self.theme}\n\n'+f'时间：{self.time}\n\n'+f'地点：{self.place}\n\n'+f'详情：{self.url}\n'
@@ -44,13 +45,13 @@ class EMAIL:
 
 
 if __name__ == '__main__':
-    e = EMAIL(['place', 'time', 'theme', 'url', 'department'])
+    e = Email(['place', 'time', 'theme', 'url', 'department'])
     e.send()
 
 
 # mail_host = 'smtp.163.com'
 # mail_sender = 'qbhy_2021@163.com'
-# mail_license = 'DKWVJTNLTLPPANAX'       # 邮箱SMTP服务授权码
+# mail_license = ''       # 邮箱SMTP服务授权码
 # mail_receivers = ['3100954150@qq.com']
 #
 # mm = MIMEMultipart()
