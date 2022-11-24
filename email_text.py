@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
-from account import password
+from account import email_password
 
 
 class Email:
@@ -16,7 +16,7 @@ class Email:
         self.url = info_list[4]
         self.e_host = 'smtp.163.com'
         self.e_sender = 'yangbo_0111@163.com'
-        self.e_license = password
+        self.e_license = email_password
         self.e_receivers = ['3100954150@qq.com']
 
     def email(self):
