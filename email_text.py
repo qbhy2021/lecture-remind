@@ -32,9 +32,17 @@ class Email:
 
     def send(self):
         try:
+            # in windows:
             stp = smtplib.SMTP()
+            print(stp.connect(self.e_host, 25))
             stp.connect(self.e_host, 25)
             stp.set_debuglevel(1)
+
+            # # in linux
+            # stp=smtplib.SMTP_SSL(self.e_host)
+            # stp.ehlo(self.e_host)
+
+            # ##-----------------------##
             stp.login(self.e_sender, self.e_license)
             stp.sendmail(self.e_sender, self.e_receivers, self.email())
             print('邮件发送成功')
@@ -45,7 +53,7 @@ class Email:
 
 
 if __name__ == '__main__':
-    e = Email(['place', 'time', 'theme', 'url', 'department'])
+    e = Email(['time', 'place', 'theme', 'department', 'url'])
     e.send()
 
 

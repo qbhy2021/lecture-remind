@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import time
 import sqlite3
 import os
-import datetime
+
 from email_text import Email
 
 
@@ -18,25 +18,18 @@ class Lecture:
         self.db_file = os.path.join(os.path.dirname(__file__), 'lecture.db')
         self.Lecture_list = []
 
-    def get_html(self, url, headers):
+    def get_html(self, url, headers=None):
         s = requests.Session()
-
-        # 2022年11月24日星期四 13:06:12
-        cookies='ASPSESSIONIDCCDRDTBT=BLOPBIGDOFBDCCBDCAPCEDGK'
+        cookies='ASPSESSIONIDCAASASBT=FGNGKGBCLONOOILHMIGKDHOC'
         cookies={cookie.split('=')[0]:cookie.split('=')[1]  for cookie in cookies.split(";")}
-        rep = s.get(url=url, headers=headers,cookies=cookies)
+        # rep = s.get(url=url, headers=headers,cookies=cookies)
+        rep = s.get(url=url)
         rep.encoding = 'gbk'
         return rep.text
 
     def get_info(self):
-        # clear cache
-        self.Lecture_list = []
-
         soup = BeautifulSoup(self.get_html(self.URL, self.HEADERS), 'html.parser')
         url_list = soup.find_all('td', align='left')  # 或attrs={'class':'fontcolor3'} ——>class_='fontcolor3'
-        print('\n\n#######################################################################')
-        print('当前时间：',datetime.datetime.now())
-        print('爬取信息长度：',len(url_list),'\n')
         for lecture in url_list:
             parent = lecture.parent
             if not parent.contents[5].font:
@@ -50,8 +43,7 @@ class Lecture:
             url = self.ROOT_URL + lecture.a['href']
             department = lecture.next_sibling.next_sibling.a.string
             self.Lecture_list.append([time, place, theme, department, url])
-            # print([time, place, theme, department, url], '\n')
-        print("\n",self.Lecture_list[0] if self.Lecture_list !=[] else "get none!!\n")
+            print([time, place, theme, department, url], '\n')
         return self.Lecture_list
 
     def judge_new(self, info):
@@ -71,20 +63,19 @@ class Lecture:
             # print(data)
             cursor.execute('delete from lecture1')  # 清除上次数据
 
-            for i in range(len(info)):
-                #print(i)
+            for i in range(0, len(info)):
+                print(i)
                 # '{info[i][0]}', '{info[i][1]}', '{info[i][2]}', '{info[i][3]}', '{info[i][4]}'
                 cursor.execute(f"insert into lecture1 (time,place,theme,department,url) values " \
                                f"('{info[i][0]}', '{info[i][1]}', '{info[i][2]}', '{info[i][3]}', '{info[i][4]}')")
 
-                if info[i][3] == '电子与信息工程学院' and info[i] not in data:
-                #if True:
+                #if info[i][3] == '电子与信息工程学院' and info[i] not in data:
+                if True:
                     news = Email(info[i])
                     news.send()
                     time.sleep(5)
-        except Exception as e:
+        except:
             print('error!')
-            print(e)
         finally:
             cursor.close()
             conn.commit()
@@ -98,8 +89,8 @@ if __name__ == '__main__':
         lect.judge_new(lect.get_info())
         # time.sleep(60 * 2)
         # count+=1
-        if count % 325==2:
-            count=2
+        if count % 625==0:
+            count=0
             news = Email(["email is running fine", "email is running fine","email is running fine", "email is running fine", "email is running fine"])
             news.send()
         time.sleep(60 * 2)
